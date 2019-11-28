@@ -2,37 +2,30 @@ package domain.controller;
 
 import java.util.HashMap;
 
-import domain.database.Database;
 import domain.model.ContactGroup;
 import domain.view.ContactGroupView;
-import domain.view.Layouts;
 
-public class ContactGroupController {
+public class ContactGroupController{
+	ContactGroupView view;
+	
+	public ContactGroupController () {
+		this.view = new ContactGroupView();
+	}
 	// Index ContactGroup
-	public static void indexGroup(Database myData) {
-		ContactGroupView.indexGroup(myData.getGroups());
+	public void index() {
+		view.index(ContactGroup.all());
 	}
 	
 	// New ContactGroup
-	public static String newGroup(Database myData) {
-		HashMap<String, String> mapaGroup = ContactGroupView.formGroup();
-		ContactGroup newGroup = new ContactGroup((String)mapaGroup.get("nome"));
-		if(myData.getGroups().size()>0) {
-			int option = ContactGroupView.menu();
-			if (option==0) {
-				return " -- Canceled --";
-			} else if(option == 2) {
-				Layouts.clear();
-				ContactGroup groupF = ContactGroupView.chooseGroup(myData.getGroups());
-				groupF.addContactGroup(newGroup);
-				return " -- Successfully Created Contact Group on "+groupF.getName()+" -- ";
-			} else {
-				newGroup.save(myData);
-				return " -- Successfully Created Contact Group -- ";
-			}
-		} else {
-			newGroup.save(myData);
+	public String create() {
+		try{
+			HashMap<String, String> mapaGroup = view.form();
+			ContactGroup newGroup = new ContactGroup((String)mapaGroup.get("nome"));
+			newGroup.save();
 			return " -- Successfully Created Contact Group -- ";
+		} catch (SaveException e) {
+			new SaveException();
+			return " -- Error Trying to Save Contact Group -- ";
 		}
 	}
 }

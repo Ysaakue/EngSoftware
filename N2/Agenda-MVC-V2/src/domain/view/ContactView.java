@@ -5,66 +5,29 @@ import java.util.Scanner;
 import java.util.TreeSet;
 
 import domain.model.Contact;
-import domain.model.ContactGroup;
 
 public class ContactView {
 	static Scanner sc = new Scanner(System.in);
 	
 	// Index
-	public static void indexContact(TreeSet<Contact> contacts, TreeSet<ContactGroup> groups) {
-		System.out.println("   --- INDEX CONTACT ---");
+	public void index(TreeSet<Contact> contacts) {
+		System.out.println("   --- INDEX CONTACT ---"+ contacts.size());
 		for(Contact contact: contacts) {
-			showContact(contact,0);
-		}
-		for(ContactGroup group: groups) {
-			showGroup(group, 0);
-		}
-	}
-	
-	// Show Group
-	public static void showGroup(ContactGroup group, int spaces) {
-		if(group.getContacts().size()>0 || group.getGroups().size()>0){
-			int realSpaces = spaces;
-			if(spaces>0) {
-				realSpaces= spaces * 3;
-			}
-			String tab = "";
-			for(int x=0;x<realSpaces;x++) {
-				tab+=" ";
-			}
-			System.out.println(tab+"*In "+group.getName()+":");
-		}
-		if(group.getContacts().size()>0) {
-			for(Contact contact: group.getContacts()) {
-				showContact(contact,spaces+1);
-			}
-		}
-		if(group.getGroups().size()>0){
-			for(ContactGroup groupC: group.getGroups()) {
-				showGroup(groupC,spaces+1);
-			}
+			showContact(contact);
 		}
 	}
 	
 	// Show Contact
-	public static void showContact(Contact contact, int spaces) {
-		int realSpaces = spaces;
-		if(spaces>0) {
-			realSpaces= spaces * 3;
-		}
-		String tab = "";
-		for(int x=0;x<realSpaces;x++) {
-			tab+=" ";
-		}
-		System.out.println(tab+"-Name: "+contact.getName());
-		System.out.println(tab+" Email Adress: "+contact.getEmailAddress());
-		System.out.println(tab+" Fax Number: "+contact.getFaxNumber());
-		System.out.println(tab+" Primary Contact Method: "+contact.getPrimaryContactMethod()+"\n");
+	public void showContact(Contact contact) {
+		System.out.println("-Name: "+contact.getName());
+		System.out.println(" Email Adress: "+contact.getEmailAddress());
+		System.out.println(" Fax Number: "+contact.getFaxNumber());
+		System.out.println(" Primary Contact Method: "+contact.getPrimaryContactMethod()+"\n");
 		
 	}
 	
 	// Form
-	public static HashMap<String, String> formContact() {
+	public HashMap<String, String> form() {
 		HashMap<String, String> mapContact = new HashMap<String, String>();
 		System.out.println("   --- FORM FOR CONTACT ---");
 		System.out.print("Name:");
