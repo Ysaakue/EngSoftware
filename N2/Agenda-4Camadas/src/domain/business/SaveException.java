@@ -1,4 +1,4 @@
-package domain.controller;
+package domain.business;
 
 @SuppressWarnings("serial")
 public class SaveException extends RuntimeException {

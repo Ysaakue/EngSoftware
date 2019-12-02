@@ -1,42 +1,57 @@
-package domain.view;
+package domain.presentation;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.TreeSet;
 
-import domain.model.ContactGroup;
+import domain.business.Group;
+import domain.business.GroupController;
 
-public class ContactGroupView {
-	static Scanner sc = new Scanner(System.in);
+public class GroupView {
+	private Scanner sc;
+	private GroupController controller;
 	
-	public ContactGroupView() {}
+	public GroupView() {
+		this.sc = new Scanner(System.in);
+		this.controller = new GroupController();
+	}
 	
 	// Index
-	public void index(TreeSet<ContactGroup> groups) {
+	public void index() {
+		TreeSet<Group> groups = controller.all();
 		System.out.println("   --- INDEX CONTACT GROUP ---");
-		for(ContactGroup group: groups) {
+		for(Group group: groups) {
 			showGroup(group, 0);
 		}
 	}
 	
 	// Show
-	public void showGroup(ContactGroup group, int spaces) {
+	public void showGroup(Group group, int spaces) {
 		System.out.println("Name: "+group.getName());
 		System.out.println("Quant. Contatos: "+group.getQntd_contatos());
 		if(group.getFather()!=0) {
-			System.out.println("Inside: "+ContactGroup.getNameById(group.getFather()));			
+			System.out.println("Inside: "+controller.getNameById(group.getFather()));			
 		}
 		System.out.println("");
 	}
 	
 	// Form
-	public HashMap<String, String> form() {
+	public void form() {
 		HashMap<String, String> mapaGroup = new HashMap<String, String>();
 		System.out.println("   --- FORM FOR CONTACT GROUP ---");
 		System.out.print("Name:");
 		mapaGroup.put("nome", sc.next());
-		return mapaGroup;
+		if(controller.all().size()>0) {
+			int opcao = menu();
+			if(opcao == 2) {
+				Group gF = chooseGroup();
+				controller.create(mapaGroup,opcao,gF);
+			}
+			controller.create(mapaGroup,opcao,new Group(""));
+		} else {
+			controller.create(mapaGroup);			
+		}
 	}
 	
 	public int menu() {
@@ -58,9 +73,10 @@ public class ContactGroupView {
 		return option;
 	}
 	
-	public ContactGroup chooseGroup(TreeSet<ContactGroup> groups) {
+	public Group chooseGroup() {
+		TreeSet<Group> groups = controller.all();
 		System.out.println("   --- CHOOSE WHICH GROUP TO ADD ---");
-		LinkedList<ContactGroup> local = listGroups(groups, new LinkedList<ContactGroup>());
+		LinkedList<Group> local = listGroups(groups, new LinkedList<Group>());
 		int option = 0;
 		do {
 			System.out.print("Type the option:");
@@ -72,8 +88,8 @@ public class ContactGroupView {
 		return local.get(option-1);
 	}
 	
-	private LinkedList<ContactGroup> listGroups(TreeSet<ContactGroup> groups,LinkedList<ContactGroup> retorno ){
-		for(ContactGroup group: groups){
+	private LinkedList<Group> listGroups(TreeSet<Group> groups,LinkedList<Group> retorno ){
+		for(Group group: groups){
 			retorno.add(group);
 			System.out.println(retorno.size()+") "+group.getName());
 		}

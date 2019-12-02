@@ -9,10 +9,12 @@ import domain.view.Layouts;
 public class App {
 	ContactGroupController grupoController;
 	ContactController contatoController;
+	Layouts layout;
 	
 	private App() {
 		this.contatoController = new ContactController();
 		this.grupoController = new ContactGroupController();
+		this.layout = new Layouts();
 	}
 	
 	public static void main(String[] args) {
@@ -21,40 +23,40 @@ public class App {
 		int opcao = 0;
 		String notice = "";
 		do{
-			opcao = Layouts.menu(notice);
+			opcao = app.layout.menu(notice);
 			notice = app.processa(opcao);
 		}while(opcao!=0);
 		sc.close();
-		System.out.println("\n\n -- SISTEMA ENCERRADO --\n");
+		app.layout.exit();
 	}
 	
 	public String processa(int opcao) {
 		String retorno = "";
 		switch(opcao) {
 			case 0:
-				Layouts.clear();
+				layout.clear();
 				break;
 			case 1:
-				Layouts.clear();
+				layout.clear();
 				retorno = contatoController.create();
 				break;
 			case 2:
-				Layouts.clear();
+				layout.clear();
 				retorno = grupoController.create();
 				break;
 			case 3:
-				Layouts.clear();
+				layout.clear();
 				contatoController.index();
-				Layouts.pressToContinue();
+				layout.pressToContinue();
 				break;
 			case 4:
-				Layouts.clear();
+				layout.clear();
 				grupoController.index();
-				Layouts.pressToContinue();
+				layout.pressToContinue();
 				break;
 			default:
 				System.out.println("Invalid option");
-				Layouts.pressToContinue();
+				layout.pressToContinue();
 				break;
 		}
 		return retorno;

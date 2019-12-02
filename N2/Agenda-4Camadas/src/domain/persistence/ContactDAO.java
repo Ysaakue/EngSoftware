@@ -1,4 +1,4 @@
-package domain.model;
+package domain.persistence;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,59 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.TreeSet;
 
-public class Contact  implements Comparable<Object>{
-	protected int id;
-	protected String name;
-	protected String emailAddress;
-	protected String faxNumber;
-	protected String primaryContactMethod;
-	
-	public Contact(String name, String emailAddress, String faxNumber, String primaryContactMethod) {
-		super();
-		this.name = name;
-		this.emailAddress = emailAddress;
-		this.faxNumber = faxNumber;
-		this.primaryContactMethod = primaryContactMethod;
-	}
-	
-	public Contact(int id,String name, String emailAddress, String faxNumber, String primaryContactMethod) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.emailAddress = emailAddress;
-		this.faxNumber = faxNumber;
-		this.primaryContactMethod = primaryContactMethod;
-	}
-	
-	public String getName() {
-		return name;
-	}
+import domain.business.Contact;;;
 
-	public String getEmailAddress() {
-		return emailAddress;
-	}
+public class ContactDAO {
 
-	public String getFaxNumber() {
-		return faxNumber;
-	}
-
-	public String getPrimaryContactMethod() {
-		return primaryContactMethod;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int compareTo(Object obj){
-        Contact proximo = (Contact)obj;
-        return this.name.compareTo(proximo.getName());
-    }
-
-	public int save() {
+	public int save(Contact contato) {
 		try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/agenda", "isaac", "password")) {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO public.contatos(name, email_address, fax_number, primary_contact_method) VALUES ('"+this.name+"', '"+this.emailAddress+"', '"+this.faxNumber+"', '"+this.primaryContactMethod+"');");
+            statement.executeUpdate("INSERT INTO public.contatos(name, email_address, fax_number, primary_contact_method) VALUES ('"+contato.getName()+"', '"+contato.getEmailAddress()+"', '"+contato.getFaxNumber()+"', '"+contato.getPrimaryContactMethod()+"');");
             ResultSet resultSet = statement.executeQuery("SELECT currval('contatos_id_seq');");
             resultSet.next();
             return resultSet.getInt("currval");
@@ -70,17 +25,17 @@ public class Contact  implements Comparable<Object>{
         }
 	}
 	
-	public void addToGroup(int groupId) {
+	public void addToGroup(Contact contato, int groupId) {
 		try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/agenda", "isaac", "password")) {
             Statement statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO public.contatos_grupos(contato_id, grupo_id) VALUES ('"+this.id+"', '"+groupId+"');");
+            statement.executeUpdate("INSERT INTO public.contatos_grupos(contato_id, grupo_id) VALUES ('"+contato.getId()+"', '"+groupId+"');");
         }catch (SQLException e) {
             System.out.println("Connection failure.");
             e.printStackTrace();
         }
 	}
 	
-	public static TreeSet<Contact> all() {
+	public TreeSet<Contact> all() {
 		try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/agenda", "isaac", "password")) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM public.contatos");
@@ -96,5 +51,4 @@ public class Contact  implements Comparable<Object>{
             return new TreeSet<Contact>();
         }
 	}
-
 }
